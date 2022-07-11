@@ -5,10 +5,10 @@ const topScreen = document.getElementById('topScreen');
 let operations=[];
 let num = '';
 let doDaMath = {
-    '+': function (x, y) { return x + y },
-    '-': function (x, y) { return x - y },
-    '*': function (x, y) { return x * y },
-    '\/': function (x, y) { return x / y },
+    '+': function (x, y) { return parseFloat(x) + parseFloat(y) },
+    '-': function (x, y) { return parseFloat(x) - parseFloat(y) },
+    '*': function (x, y) { return parseFloat(x) * parseFloat(y) },
+    '\/': function (x, y) { return parseFloat(x) / parseFloat(y) },
 }
 //________________________________
 calcScreen.textContent = '';
@@ -32,23 +32,13 @@ let simbols = /^[+\-*\/]/;
         })
     } else if(element.textContent == '='){ 
         element.addEventListener('click', function(){
-            if(num || operations.length > 3){
+            if(num){
                 operations.push(num);
                 num = '';
                 calcScreen.textContent = '';
                 topScreen.textContent = operations.join(' ');
-                console.log(operations);
-                //console.log(eval(operations.join(' ')))
-                for(let i = 1;i<operations.length;){
-                    let first = parseFloat(operations[0]);
-                    let operator = operations[1];
-                    let second = parseFloat(operations[2]);
-                    let result = doDaMath[operator](first,second);
-                    console.log(result);
-                    operations.splice(0,3);
-                    operations.unshift(result);
-                    console.log(operations);
-                }
+                let result = calculatef(operations);
+                calcScreen.textContent = result;
             }
         })
     } else {
@@ -75,3 +65,40 @@ let simbols = /^[+\-*\/]/;
     }
     
 });
+
+let calculatef = function(arr){
+    //console.log(arr);
+    for(let i =0;i<arr.length-1;i++){
+        if(arr[i]=='*' || arr[i] =='/'){
+            let operator = arr[i];
+            let first = arr[i-1];
+            let second = arr[i+1];
+            let temp = arr;
+            result = doDaMath[operator](first,second);
+            arr[i+1] = result;
+            arr.splice(i-1,2)
+            i=0;
+            console.log(arr);
+
+        }
+    }
+    for(let i =0;i<arr.length-1;i++){
+        if(arr[i]=='+' || arr[i] =='-'){
+            let operator = arr[i];
+            let first = arr[i-1];
+            let second = arr[i+1];
+            let temp = arr;
+            result = doDaMath[operator](first,second);
+            arr[i+1] = result;
+            arr.splice(i-1,2)
+            i=0;
+            console.log(arr);
+        }
+    }
+    if(arr[0].toString().indexOf('.')!=-1 || (arr[0].length-arr[0].toString().indexOf('.')>6)){
+        return arr[0].toFixed(6);
+    } else {
+        return arr[0];
+    }
+    
+}
