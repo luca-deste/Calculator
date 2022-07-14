@@ -1,71 +1,48 @@
 let numPanel = document.getElementsByClassName('numKey');
+let onoff = document.getElementsByClassName('button');
 const calcScreen = document.getElementById('lowScreen');
 const topScreen = document.getElementById('topScreen');
+//_All elements that are defined
 //________________________________
 let operations=[];
 let num = '';
+let result = undefined;
 let doDaMath = {
     '+': function (x, y) { return parseFloat(x) + parseFloat(y) },
     '-': function (x, y) { return parseFloat(x) - parseFloat(y) },
     '*': function (x, y) { return parseFloat(x) * parseFloat(y) },
     '\/': function (x, y) { return parseFloat(x) / parseFloat(y) },
 }
+//_All variables that are defined
 //________________________________
 calcScreen.textContent = '';
 numPanel = [...numPanel];
+onoff = [...onoff]
+//_All variables/Elements that are modified
 //________________________________
 
 //________________________________
 numPanel.forEach(element => {
-let simbols = /^[+\-*\/]/;
+    let simbols = /^[+\-*\/]/;
     if(element.textContent.match(simbols)){
-        //console.log(element.textContent);
-        element.addEventListener('click',function(){
-            if(num){
-                operations.push(num);
-                operations.push(element.textContent);
-                num = '';
-                calcScreen.textContent = '';
-                topScreen.textContent = operations.join(' ')
-            }
-            //console.log(operations);
-        })
+        element.addEventListener('click',symbolshandler);
+
     } else if(element.textContent == '='){ 
-        element.addEventListener('click', function(){
-            if(num){
-                operations.push(num);
-                num = '';
-                calcScreen.textContent = '';
-                topScreen.textContent = operations.join(' ');
-                let result = calculatef(operations);
-                calcScreen.textContent = result;
-            }
-        })
+        element.addEventListener('click', equalHandler)
     } else {
-        //console.log(element.textContent);
-        element.addEventListener('click', function(){
-            if(num.length<13){
-                if(element.textContent =='.'){
-                    if(!num.includes('.')){
-                            num += element.textContent;
-                            calcScreen.textContent = num;                       
-                    }
-                } else {
-                    if(num.includes('.') && (num.length-num.indexOf('.'))<6){
-                        num += element.textContent;
-                        calcScreen.textContent = num;
-                    } else if (!num.includes('.')){
-                        num += element.textContent;
-                        calcScreen.textContent = num;
-                    }
-                    
-                }
-            }                
-    });
-    }
-    
+        element.addEventListener('click', numKeyHandler);
+    }   
 });
 
+onoff.forEach(e =>{
+    if(e.textContent=='Delete'){
+        e.addEventListener('click',delCalc);
+    } else if (e.textContent=='Clear'){
+        e.addEventListener('click', clearCalc)
+    }
+});
+//_All the forEach to target the buttons
+//________________________________
 let calculatef = function(arr){
     //console.log(arr);
     for(let i =0;i<arr.length-1;i++){
@@ -102,3 +79,59 @@ let calculatef = function(arr){
     }
     
 }
+//_All the functions designed to work inside the code
+//________________________________
+function clearCalc(){
+    num = '';
+    operations = [];
+    calcScreen.textContent = '';
+    topScreen.textContent = '';
+}
+
+function delCalc(){
+    num = '';
+    calcScreen.textContent = '';
+}
+
+function symbolshandler(){
+    if(num){
+        operations.push(num);
+        operations.push(this.textContent);
+        num = '';
+        calcScreen.textContent = '';
+        topScreen.textContent = operations.join(' ');
+    }
+};
+
+function equalHandler(){
+    if(num){
+        operations.push(num);
+        num = '';
+        calcScreen.textContent = '';
+        topScreen.textContent = operations.join(' ');
+        result = calculatef(operations);
+        calcScreen.textContent = result;
+    }
+}
+
+function numKeyHandler(){
+    if(num.length<13){
+        if(this.textContent =='.'){
+            if(!num.includes('.')){
+                    num += this.textContent;
+                    calcScreen.textContent = num;                       
+            }
+        } else {
+            if(num.includes('.') && (num.length-num.indexOf('.'))<6){
+                num += this.textContent;
+                calcScreen.textContent = num;
+            } else if (!num.includes('.')){
+                num += this.textContent;
+                calcScreen.textContent = num;
+            }
+            
+        }
+    }
+}
+//_All the functions created to target elements
+//________________________________
