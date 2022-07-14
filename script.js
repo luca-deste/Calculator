@@ -20,8 +20,6 @@ numPanel = [...numPanel];
 onoff = [...onoff]
 //_All variables/Elements that are modified
 //________________________________
-
-//________________________________
 numPanel.forEach(element => {
     let simbols = /^[+\-*\/]/;
     if(element.textContent.match(simbols)){
@@ -72,8 +70,8 @@ let calculatef = function(arr){
             console.log(arr);
         }
     }
-    if(arr[0].toString().indexOf('.')!=-1 || (arr[0].length-arr[0].toString().indexOf('.')>6)){
-        return arr[0].toFixed(6);
+    if(arr[0].toString().indexOf('.')!=-1&&(arr[0].toString().length-arr[0].toString().indexOf('.'))>3){    
+        return arr[0].toFixed(3);
     } else {
         return arr[0];
     }

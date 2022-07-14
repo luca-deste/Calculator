@@ -36,6 +36,7 @@ body{
     align-items: flex-end;
     font-weight: 700;
     font-size: 20px;
+    overflow: hidden;
 }
 .lowScreen {
     border: 1px solid green;
@@ -47,6 +48,7 @@ body{
     margin-right: 10px;
     font-weight: 700;
     font-size: 57px;
+    overflow: hidden;
 }
 .onoff {
     border: 1px solid purple;
