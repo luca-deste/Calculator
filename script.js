@@ -43,7 +43,7 @@ onoff.forEach(e =>{
 document.addEventListener('keypress',function(elem){
     let simbols = /^[+\-*\/]/;
     let numbers = /[0-9]/;
-    let dot = /\./
+    let dot = /\,/
     if(elem.key.match(simbols)){
         symbolshandler(elem);
     } else if(elem.key == '=' || elem.key==='Enter'){ 
@@ -55,7 +55,7 @@ document.addEventListener('keypress',function(elem){
     }  
 })
 
-//_All the events to target the buttons
+//_All the events to target the elements
 //________________________________
 let calculatef = function(arr){
     //console.log(arr);
@@ -64,7 +64,6 @@ let calculatef = function(arr){
             let operator = arr[i];
             let first = arr[i-1];
             let second = arr[i+1];
-            let temp = arr;
             result = doDaMath[operator](first,second);
             arr[i+1] = result;
             arr.splice(i-1,2)
@@ -78,7 +77,6 @@ let calculatef = function(arr){
             let operator = arr[i];
             let first = arr[i-1];
             let second = arr[i+1];
-            let temp = arr;
             result = doDaMath[operator](first,second);
             arr[i+1] = result;
             arr.splice(i-1,2)
@@ -86,7 +84,7 @@ let calculatef = function(arr){
             console.log(arr);
         }
     }
-    if(arr[0].toString().indexOf('.')!=-1&&(arr[0].toString().length-arr[0].toString().indexOf('.'))>3){    
+    if(arr[0].toString().indexOf(',')!=-1&&(arr[0].toString().length-arr[0].toString().indexOf(','))>3){    
         return arr[0].toFixed(3);
     } else {
         return arr[0];
@@ -100,6 +98,7 @@ function clearCalc(){
     operations = [];
     calcScreen.textContent = '';
     topScreen.textContent = '';
+    result = undefined;
 }
 
 function delCalc(){
@@ -109,13 +108,13 @@ function delCalc(){
 
 function symbolshandler(elem){
     if(this.textContent && num){
-            operations.push(num);
+            commacheck(num);
             operations.push(this.textContent);
             num = '';
             calcScreen.textContent = '';
             topScreen.textContent = operations.join(' ');
     } else if(elem.key && num){
-            operations.push(num);
+            commacheck(num);
             operations.push(elem.key);
             num = '';
             calcScreen.textContent = '';
@@ -125,12 +124,18 @@ function symbolshandler(elem){
 
 function equalHandler(){
     if(num){
-        operations.push(num);
+        commacheck(num);
         num = '';
         calcScreen.textContent = '';
         topScreen.textContent = operations.join(' ');
         result = calculatef(operations);
-        calcScreen.textContent = result;
+        console.log(result)
+        if(result == 'Infinity'){
+            calcScreen.textContent = 'Error';
+        } else {
+            calcScreen.textContent = result;
+        }
+        
     };
 }
 
@@ -141,26 +146,61 @@ function numKeyHandler(elem){
     } else {
         digit = this.textContent;
     }
+    if(result!=undefined){
+        clearCalc();
+    }
     if(num.length<13){
-        if(digit =='.'){
-            if(!num.includes('.')){
+        if(digit ==','){
+            if(!num.includes(',')){
                 if(num.toString().length==0){
                     num = '0';
                 }
                 num += digit;
-                calcScreen.textContent = num;                       
+                calcScreen.textContent = num;
+                dotNotation()                     
             }
         } else {
-            if(num.includes('.') && (num.length-num.indexOf('.'))<6){
+            if(num.includes(',') && (num.length-num.indexOf(','))<6){
                 num += digit;
                 calcScreen.textContent = num;
-            } else if (!num.includes('.')){
+                dotNotation()
+            } else if (!num.includes(',')){
                 num += digit;
                 calcScreen.textContent = num;
+                dotNotation()
             }
             
         }
     }
+};
+function dotNotation(){
+    console.log(calcScreen.textContent);
+    if(calcScreen.textContent.includes(',')){
+        var n = calcScreen.textContent.length - calcScreen.textContent.indexOf(',');
+    } else {
+        var n = calcScreen.textContent.length;
+    }
+    let digit = 0
+    for(let i = n;i<0;i--){
+        if(digit==3){
+            digit = 0;
+            digit++;
+            let firstpart = calcScreen.textContent.splice(i);
+            let secondpart = calcScreen.textContent
+            calcScreen.textContent = firstpart + '.' + secondpart;
+        }
+    }
+
+}
+
+function commacheck(num){
+    console.log(num);
+    if(num.includes(',')){
+        num = num.replace(/\,/gm,'.')
+    }
+    console.log(num)
+    operations.push(num);
+    console.log(operations);
 }
 //_All the functions created to target elements
 //________________________________
