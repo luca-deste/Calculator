@@ -39,7 +39,23 @@ onoff.forEach(e =>{
         e.addEventListener('click', clearCalc)
     }
 });
-//_All the forEach to target the buttons
+
+document.addEventListener('keypress',function(elem){
+    let simbols = /^[+\-*\/]/;
+    let numbers = /[0-9]/;
+    let dot = /\./
+    if(elem.key.match(simbols)){
+        symbolshandler(elem);
+    } else if(elem.key == '=' || elem.key==='Enter'){ 
+        elem.preventDefault();
+        equalHandler();
+    } else if(elem.key.match(numbers) || elem.key.match(dot)){
+        numKeyHandler(elem);
+        console.log(elem.key);
+    }  
+})
+
+//_All the events to target the buttons
 //________________________________
 let calculatef = function(arr){
     //console.log(arr);
@@ -91,14 +107,20 @@ function delCalc(){
     calcScreen.textContent = '';
 }
 
-function symbolshandler(){
-    if(num){
-        operations.push(num);
-        operations.push(this.textContent);
-        num = '';
-        calcScreen.textContent = '';
-        topScreen.textContent = operations.join(' ');
-    }
+function symbolshandler(elem){
+    if(this.textContent && num){
+            operations.push(num);
+            operations.push(this.textContent);
+            num = '';
+            calcScreen.textContent = '';
+            topScreen.textContent = operations.join(' ');
+    } else if(elem.key && num){
+            operations.push(num);
+            operations.push(elem.key);
+            num = '';
+            calcScreen.textContent = '';
+            topScreen.textContent = operations.join(' ');
+    } 
 };
 
 function equalHandler(){
@@ -109,22 +131,31 @@ function equalHandler(){
         topScreen.textContent = operations.join(' ');
         result = calculatef(operations);
         calcScreen.textContent = result;
-    }
+    };
 }
 
-function numKeyHandler(){
+function numKeyHandler(elem){
+    let digit;
+    if(elem.key){
+        digit = elem.key;
+    } else {
+        digit = this.textContent;
+    }
     if(num.length<13){
-        if(this.textContent =='.'){
+        if(digit =='.'){
             if(!num.includes('.')){
-                    num += this.textContent;
-                    calcScreen.textContent = num;                       
+                if(num.toString().length==0){
+                    num = '0';
+                }
+                num += digit;
+                calcScreen.textContent = num;                       
             }
         } else {
             if(num.includes('.') && (num.length-num.indexOf('.'))<6){
-                num += this.textContent;
+                num += digit;
                 calcScreen.textContent = num;
             } else if (!num.includes('.')){
-                num += this.textContent;
+                num += digit;
                 calcScreen.textContent = num;
             }
             
