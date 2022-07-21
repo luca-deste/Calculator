@@ -8,27 +8,28 @@ body{
 
 .container {
     margin-top: 50px;
-    border: 1px solid black;
     width: 450px;
     height: 650px;
     display: flex;
     flex-direction: column;
     gap: 10px;
     align-items: center;
+    background-color: #4e637a;
+    border-radius: 20px;
+    box-shadow: 3px 5px black;
 
 }
 .screen {
     margin-top: 15px;
-    border: 1px solid red;
     width: 88%;
     height: 30%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     gap:5px;
+    background-color: #4e637a;
 }
 .topScreen{
-    border: 1px solid blue;
     text-align: end;
     height: 20%;
     display: flex;
@@ -37,29 +38,32 @@ body{
     font-weight: 700;
     font-size: 20px;
     overflow: hidden;
+    background-color: #d3e4f7;
+    border-radius: 5px;
 }
 .lowScreen {
-    border: 1px solid green;
     text-align: end;
     height: 70%;
     display: flex;
     flex-direction: row-reverse;
     align-items: center;
-    margin-right: 10px;
     font-weight: 700;
-    font-size: 57px;
+    font-size: 50px;
     overflow: hidden;
+    word-break: break-all;
+    background-color: #eaf3fd;
+    border-radius: 5px;
 }
 .onoff {
-    border: 1px solid purple;
     width: 88%;
     height: 10%;
     display: flex;
     justify-content: space-around;
     align-items: center;
+    background-color:#6481a0 ;
+    border-radius: 10px;
 }
 .buttons {
-    border:1px solid blue;
     width: 88%;
     height: 60%;
     margin-bottom: 15px;
@@ -68,16 +72,15 @@ body{
     gap:5px;
     justify-content: center;
     padding: 7px 0;
+    background-color: #6481a0;
+    border-radius: 10px;
 }
 .numKey{
-    border-color: green;
     border-radius: 10px;
     width: 23%;
-    /*display: flex;
-    align-items: center;
-    justify-content: center;*/
     font-size: 25px;
     font-weight: 700;
+    background-color: #e1efff;
 }
 .button{
     border-radius: 15px;
@@ -85,4 +88,13 @@ body{
     height: 90%;
     font-size: 25px;
     font-weight: 700;
+    background-color: #e1efff;
 }
+
+button:focus-visible{
+    outline: none;
+}
+
+button:hover {
+    background: #c6defa
+  }

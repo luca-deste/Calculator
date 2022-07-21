@@ -2,6 +2,7 @@ let numPanel = document.getElementsByClassName('numKey');
 let onoff = document.getElementsByClassName('button');
 const calcScreen = document.getElementById('lowScreen');
 const topScreen = document.getElementById('topScreen');
+const buttons = document.querySelectorAll('button');
 //_All elements that are defined
 //________________________________
 let operations=[];
@@ -17,9 +18,11 @@ let doDaMath = {
 //________________________________
 calcScreen.textContent = '';
 numPanel = [...numPanel];
-onoff = [...onoff]
+onoff = [...onoff];
+btns = [...buttons];
 //_All variables/Elements that are modified
 //________________________________
+
 numPanel.forEach(element => {
     let simbols = /^[+\-*\/]/;
     if(element.textContent.match(simbols)){
@@ -32,6 +35,7 @@ numPanel.forEach(element => {
     }   
 });
 
+
 onoff.forEach(e =>{
     if(e.textContent=='Delete'){
         e.addEventListener('click',delCalc);
@@ -40,10 +44,11 @@ onoff.forEach(e =>{
     }
 });
 
-document.addEventListener('keypress',function(elem){
+document.addEventListener('keydown',function(elem){
     let simbols = /^[+\-*\/]/;
     let numbers = /[0-9]/;
-    let dot = /\,/
+    let dot = /\./
+    console.log(elem.key)
     if(elem.key.match(simbols)){
         symbolshandler(elem);
     } else if(elem.key == '=' || elem.key==='Enter'){ 
@@ -51,14 +56,16 @@ document.addEventListener('keypress',function(elem){
         equalHandler();
     } else if(elem.key.match(numbers) || elem.key.match(dot)){
         numKeyHandler(elem);
-        console.log(elem.key);
-    }  
+    }  else if(elem.key == 'Backspace'){
+        delCalc();
+    } else if(elem.key =='Delete'){
+        clearCalc();
+    }
 })
 
 //_All the events to target the elements
 //________________________________
 let calculatef = function(arr){
-    //console.log(arr);
     for(let i =0;i<arr.length-1;i++){
         if(arr[i]=='*' || arr[i] =='/'){
             let operator = arr[i];
@@ -68,7 +75,6 @@ let calculatef = function(arr){
             arr[i+1] = result;
             arr.splice(i-1,2)
             i=0;
-            console.log(arr);
 
         }
     }
@@ -81,10 +87,9 @@ let calculatef = function(arr){
             arr[i+1] = result;
             arr.splice(i-1,2)
             i=0;
-            console.log(arr);
         }
     }
-    if(arr[0].toString().indexOf(',')!=-1&&(arr[0].toString().length-arr[0].toString().indexOf(','))>3){    
+    if(arr[0].toString().indexOf('.')!=-1&&(arr[0].toString().length-arr[0].toString().indexOf('.'))>3){    
         return arr[0].toFixed(3);
     } else {
         return arr[0];
@@ -108,13 +113,15 @@ function delCalc(){
 
 function symbolshandler(elem){
     if(this.textContent && num){
-            commacheck(num);
+            //commacheck(num);
+            operations.push(num);
             operations.push(this.textContent);
             num = '';
             calcScreen.textContent = '';
             topScreen.textContent = operations.join(' ');
     } else if(elem.key && num){
-            commacheck(num);
+            operations.push(num);
+            //commacheck(num);
             operations.push(elem.key);
             num = '';
             calcScreen.textContent = '';
@@ -124,16 +131,19 @@ function symbolshandler(elem){
 
 function equalHandler(){
     if(num){
-        commacheck(num);
+        //commacheck(num);
+        operations.push(num);
         num = '';
         calcScreen.textContent = '';
         topScreen.textContent = operations.join(' ');
         result = calculatef(operations);
-        console.log(result)
         if(result == 'Infinity'){
             calcScreen.textContent = 'Error';
-        } else {
-            calcScreen.textContent = result;
+        } else if(result.length>15){
+            calcScreen.textContent = 'Error';
+            topScreen.textContent = 'NUMBER TOO BIG'
+        }else {
+            calcScreen.textContent = parseFloat(result).toLocaleString();
         }
         
     };
@@ -150,57 +160,27 @@ function numKeyHandler(elem){
         clearCalc();
     }
     if(num.length<13){
-        if(digit ==','){
-            if(!num.includes(',')){
+        if(digit =='.'){
+            if(!num.includes('.')){
                 if(num.toString().length==0){
                     num = '0';
                 }
                 num += digit;
-                calcScreen.textContent = num;
-                dotNotation()                     
+                calcScreen.textContent = parseFloat(num).toLocaleString();;                       
             }
         } else {
-            if(num.includes(',') && (num.length-num.indexOf(','))<6){
+            if(num.includes('.') && (num.length-num.indexOf('.'))<6){
                 num += digit;
                 calcScreen.textContent = num;
-                dotNotation()
-            } else if (!num.includes(',')){
-                num += digit;
-                calcScreen.textContent = num;
-                dotNotation()
+            } else if (!num.includes('.')){
+                if(num!='0'){
+                    num += digit;
+                    calcScreen.textContent = parseFloat(num).toLocaleString();
+                } 
             }
             
         }
     }
 };
-function dotNotation(){
-    console.log(calcScreen.textContent);
-    if(calcScreen.textContent.includes(',')){
-        var n = calcScreen.textContent.length - calcScreen.textContent.indexOf(',');
-    } else {
-        var n = calcScreen.textContent.length;
-    }
-    let digit = 0
-    for(let i = n;i<0;i--){
-        if(digit==3){
-            digit = 0;
-            digit++;
-            let firstpart = calcScreen.textContent.splice(i);
-            let secondpart = calcScreen.textContent
-            calcScreen.textContent = firstpart + '.' + secondpart;
-        }
-    }
-
-}
-
-function commacheck(num){
-    console.log(num);
-    if(num.includes(',')){
-        num = num.replace(/\,/gm,'.')
-    }
-    console.log(num)
-    operations.push(num);
-    console.log(operations);
-}
 //_All the functions created to target elements
 //________________________________
